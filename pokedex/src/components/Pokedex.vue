@@ -194,6 +194,47 @@
                       </v-row>
                       <v-row>
                         <v-col>
+                          <center class="subtitulo">Type Defenses</center>
+                        </v-col>
+                      </v-row>
+                      <v-col>
+                        <center><table class="type-table">
+                          <tbody>
+                            <tr>
+                              <th><a class="defense normal">Nor</a></th>
+                              <th><a class="defense fighting">Fig</a></th>
+                              <th><a class="defense flying">Fly</a></th>
+                              <th><a class="defense poison">Poi</a></th>
+                              <th><a class="defense ground">Gro</a></th>
+                              <th><a class="defense rock">Roc</a></th>
+                              <th><a class="defense bug">Bug</a></th>
+                              <th><a class="defense ghost">Gho</a></th>
+                              <th><a class="defense steel">Ste</a></th>
+                              <th><a class="defense fire">Fir</a></th>
+                              <th><a class="defense water">Wat</a></th>
+                              <th><a class="defense grass">Gra</a></th>
+                              <th><a class="defense electric">Ele</a></th> 
+                              <th><a class="defense psychic">Psy</a></th> 
+                              <th><a class="defense ice">Ice</a></th> 
+                              <th><a class="defense dragon">Dra</a></th> 
+                              <th><a class="defense dark">Dar</a></th>                               
+                              <th><a class="defense fairy">Fai</a></th>
+                            </tr>
+                            <tr>
+                              <td v-for="f in fraqueza" :key="f.id">
+                                <a v-if="f.url == 0 && f.name != 'shadow' && f.name != 'unknown'" class="defense fx-100"></a>
+                                <a v-if="f.url == 1" class="defense fx-200">2</a>
+                                <a v-if="f.url == 2" class="defense fx-400">4</a>
+                                <a v-if="f.url == -1" class="defense fx-50">1/2</a>
+                                <a v-if="f.url == -2" class="defense fx-25">1/4</a>
+                                <a v-if="f.url <= -3" class="defense fx-0">0</a> 
+                              </td>                         
+                            </tr>
+                          </tbody>
+                        </table></center>
+                      </v-col>
+                      <v-row>
+                        <v-col>
                           <center class="subtitulo">Evolution Chart</center>
                         </v-col>
                       </v-row>
@@ -409,6 +450,60 @@
             </tbody>
           </table>
         </v-col></v-row>
+        <v-row>
+          <v-col>
+            <center class="subtitulo">Type Defenses</center>
+          </v-col>
+        </v-row>
+        <v-col>
+          <center><table class="type-table">
+            <tbody>
+              <tr>
+                <th><a class="defense normal">Nor</a></th>
+                <th><a class="defense fighting">Fig</a></th>
+                <th><a class="defense flying">Fly</a></th>
+                <th><a class="defense poison">Poi</a></th>
+                <th><a class="defense ground">Gro</a></th>
+                <th><a class="defense rock">Roc</a></th>
+                <th><a class="defense bug">Bug</a></th>
+                <th><a class="defense ghost">Gho</a></th>
+                <th><a class="defense steel">Ste</a></th>
+           
+              </tr>
+              <tr>
+                <td v-for="index in 9" :key="index">
+                  <a v-if="fraqueza[index].url == 0 && fraqueza[index].name != 'shadow' && fraqueza[index].name != 'unknown'" class="defense fx-100"></a>
+                  <a v-if="fraqueza[index].url == 1" class="defense fx-200">2</a>
+                  <a v-if="fraqueza[index].url == 2" class="defense fx-400">4</a>
+                  <a v-if="fraqueza[index].url == -1" class="defense fx-50">1/2</a>
+                  <a v-if="fraqueza[index].url == -2" class="defense fx-25">1/4</a>
+                  <a v-if="fraqueza[index].url <= -3" class="defense fx-0">0</a> 
+                </td>                         
+              </tr>
+              <tr>
+                <th><a class="defense fire">Fir</a></th>
+                <th><a class="defense water">Wat</a></th>
+                <th><a class="defense grass">Gra</a></th>
+                <th><a class="defense electric">Ele</a></th> 
+                <th><a class="defense psychic">Psy</a></th> 
+                <th><a class="defense ice">Ice</a></th> 
+                <th><a class="defense dragon">Dra</a></th> 
+                <th><a class="defense dark">Dar</a></th>                               
+                <th><a class="defense fairy">Fai</a></th>
+              </tr>
+              <tr>
+                <td v-for="index in 9" :key="index">
+                  <a v-if="fraqueza[index+9].url == 0 && fraqueza[index].name != 'shadow' && fraqueza[index].name != 'unknown'" class="defense fx-100"></a>
+                  <a v-if="fraqueza[index+9].url == 1" class="defense fx-200">2</a>
+                  <a v-if="fraqueza[index+9].url == 2" class="defense fx-400">4</a>
+                  <a v-if="fraqueza[index+9].url == -1" class="defense fx-50">1/2</a>
+                  <a v-if="fraqueza[index+9].url == -2" class="defense fx-25">1/4</a>
+                  <a v-if="fraqueza[index+9].url <= -3" class="defense fx-0">0</a> 
+                </td>                         
+              </tr>
+            </tbody>
+          </table></center>
+        </v-col>
         <v-row><v-col>
           <center class="subtitulo">Evolution Chart</center>
         </v-col></v-row>
@@ -463,6 +558,7 @@ import getPokemon from "../services/getPokemon.js";
 import getPokemonByFilter from "../services/getPokemonByFilter.js";
 import getEvolucao from "../services/getEvolucao.js";
 import getEspecie from "../services/getEspecie.js";
+import getFraqueza from "../services/getFraqueza.js";
 import loading from "./loading";
 export default {
   name: 'Pokedex',
@@ -487,6 +583,7 @@ export default {
       velocidade:'',
       evolucao: [],
       especie: [],
+      fraqueza:[],
       loading: false,
       drawer: false,
       group: null,
@@ -525,6 +622,8 @@ export default {
       if(dados.types.length > 1){
         this.tipos = this.tipos+' / '+ dados.types[1].type.name;
       }
+      const fraquezas = await getFraqueza(this.tipos);
+      this.fraqueza = fraquezas;
       this.altura = dados.height/10;
       this.peso = dados.weight/10;
       this.numero = dados.id;
@@ -693,6 +792,40 @@ th {
   transition: opacity 0.4s;
 }
 
+.type-table{
+  display: inline-block;
+  margin: 0 0 0 -1px;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.type-table th{
+  padding: 0;
+  border: 1px solid #222222;
+}
+
+.type-table td{
+  padding: 0;
+  border: 1px solid #222222;
+}
+
+.defense{
+  display: block;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: 1px solid rgba(0,0,0,0.2);
+  color: #fff;
+  font-size: 0.625rem;
+  font-weight: normal;
+  line-height: 26px;
+  text-align: center;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+  text-transform: uppercase;
+  transition: opacity 0.4s;
+  margin-bottom: 0;
+}
+
 .normal{
   background-color: #aa9;
 }
@@ -746,6 +879,40 @@ th {
 }
 .fairy{
   background-color: #e9e;
+}
+
+.fx-cell{
+  padding: 0;
+  border: 1px solid #222222;
+  color: #ffffff;
+  font-size: 0.625rem;
+  width: 28px;
+  height: 28px;
+  line-height: 26px;
+  text-align: center;
+}
+.fx-100{
+  background-color: #ffffff;
+}
+
+.fx-50{
+  background-color: #a40000;
+}
+
+.fx-25{
+  background-color: #7c0000;
+}
+
+.fx-0{
+  background-color: #2e3436;
+}
+
+.fx-200{
+  background-color: #4e9a06;
+}
+
+.fx-400{
+  background-color: #73d216;
 }
 
 </style>
