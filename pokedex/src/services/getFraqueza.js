@@ -1,4 +1,5 @@
 import axios from "axios";
+//Método de captura das fraquezas/vantagens baseado na combinação de tipos dado de entrada
 export default async (entrada) => {
     /* 
     -3 = 0x dano 
@@ -10,13 +11,19 @@ export default async (entrada) => {
     */
     let resultado = [];
     let tam = 0;
+
+    //Tratamento dos tipos de "xxx / xxx" para ["xxx","xxx"]
     let tipos = entrada.replace(" ","").replace(" ","").split('/');
+
+    //Busca todos os tipos na api para criar um array de tipos inicializando o dano em 0
     let { data } = await axios.get('https://pokeapi.co/api/v2/type/');
     resultado = data.results;
     tam = data.count;
     for(let i = 0;i<tam;i++){
         resultado[i].url = 0;
     }
+
+    //Para cada tipo do pokemon, incrementa suas fraquezas e vantagens
     for(let k = 0;k<tipos.length;k++){
         data = await axios.get('https://pokeapi.co/api/v2/type/'+tipos[k]+'/');
         let data1 = data.data;
@@ -38,5 +45,6 @@ export default async (entrada) => {
             }
         }
     }
+    //Retorna array "[{name:xxxx,url:0},{name:xxxx,url:0},...]"
     return resultado;
 };

@@ -1,18 +1,19 @@
 import axios from "axios";
+//Método de captura de filtro dos pokemons baseado no tipo dado de entrada
 export default async (filtro) => {
     let array = [];
     let a = [];
     let b = [];
     let tipo = [];
-    //let regiao = [];
+    
+    //Retorna da api todos os possívei tipos de entrada
     let { data } = await axios.get('https://pokeapi.co/api/v2/type/');
     let tipos = data;
-    //data = await axios.get('https://pokeapi.co/api/v2/pokedex/');
-    //let regioes = data.data;
 
     //Em caso de multipla pesquisa
     filtro = filtro.split('&');
     console.log("Filtro",filtro);
+
     //Separando os tipos
     for(let i = 0;i<filtro.length;i++){
         for(let j = 0;j<parseInt(tipos.count);j++){
@@ -21,6 +22,7 @@ export default async (filtro) => {
             }
         }
     }
+
     //Se a pesquisa for por 2 tipos
     if(tipo.length == 2){
         console.log("Tipos",tipo);
@@ -39,6 +41,7 @@ export default async (filtro) => {
                 }
             }
         }
+
     //Se a pesquisa for por 1 tipo
     }else if(tipo.length == 1){
         const { data } = await axios.get('https://pokeapi.co/api/v2/type/'+tipo[0]+'/');
@@ -47,6 +50,7 @@ export default async (filtro) => {
             array[i] = a;
         }
     }
+
     //Se filtro muda para vazio
     if(filtro == ''){
         data = await axios.get(`https://pokeapi.co/api/v2/pokedex/2/`);
@@ -57,5 +61,7 @@ export default async (filtro) => {
             a=[];
         }
     }
+
+    //Retorna array com os pokemons filtrados
     return array;
 };
