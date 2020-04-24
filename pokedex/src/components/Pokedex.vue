@@ -5,42 +5,49 @@
     <v-row style="margin-top:-12px" v-show="$vuetify.breakpoint.xl || $vuetify.breakpoint.lg || $vuetify.breakpoint.md">
       <div class="pokedex">
         <v-col>
-        <v-app-bar dark>
-          <v-row>
-            <v-text-field id="filtro" style="padding-top: 36px" label="Filter" solo></v-text-field>
-          </v-row> 
-            <v-spacer></v-spacer>
-            <v-btn icon v-on:click="carregarLista()"><v-icon>mdi-magnify</v-icon></v-btn>              
-        </v-app-bar>
+          <!-- Filtro -->
+          <v-app-bar dark>
+            <v-row>
+              <v-text-field id="filtro" style="padding-top: 36px" label="Filter" solo></v-text-field>
+            </v-row> 
+              <v-spacer></v-spacer>
+              <v-btn icon v-on:click="carregarLista()"><v-icon>mdi-magnify</v-icon></v-btn>              
+          </v-app-bar>
 
-        <v-list dark nav class="lista">
-          <div v-for="p in pokemons" :key="p.id">
-            <v-list-item v-on:click="select($event)" :key="p.id" v-if="parseInt(p.url.split('/')[6]) <= 151">
-              <v-list-item-avatar><img :src="require('../assets/sprites/'+ p.name +'.gif')"></v-list-item-avatar>            
-              <v-list-item-title>{{ p.name }}</v-list-item-title>                     
-            </v-list-item>
-          </div>
-        </v-list>
+          <!-- Pokedex -->
+          <v-list dark nav class="lista">
+            <div v-for="p in pokemons" :key="p.id">
+              <v-list-item v-on:click="select($event)" :key="p.id" v-if="parseInt(p.url.split('/')[6]) <= 151">
+                <v-list-item-avatar><img :src="require('../assets/sprites/'+ p.name +'.gif')"></v-list-item-avatar>            
+                <v-list-item-title>{{ p.name }}</v-list-item-title>                     
+              </v-list-item>
+            </div>
+          </v-list>
         </v-col>
       </div>
       <v-content>
         <v-container fluid>
+          <!-- Informações do pokemon selecionado -->
           <div id="pokemonSelecionado" v-if="nome != ''">
             <v-card class="dados" dark max-height="100vh">
               <v-container>
                 <v-col>
-                  <v-row>                   
+                  <v-row>
+                    <!-- Nome -->                   
                     <center class="titulo">{{titleize(nome)}}</center>
                   </v-row>
                   <v-row>
                     <v-col>
                       <v-row justify="space-between">                                                
                         <v-col>
+                          <!-- Dados simples da Pokedex -->
                           <center class="subtitulo">Pokedex Data</center>
                           <table>
                             <tbody>
                               <tr><th>National Nº</th><td>{{nacional}}</td></tr>
                               <tr><th>Species</th><td>{{especie.genera[2].genus}}</td></tr>
+
+                              <!-- Tratamento de cores para os tipos -->
                               <tr><th>Type</th>
                               <td>
                                 <div v-if="tipos.split('/')[0].includes('normal')" class="type normal">normal</div>&nbsp;
@@ -97,6 +104,7 @@
                             </tbody>
                           </table>
                         </v-col>
+                        <!-- Dados de treino e incubação (Com diferenciação de tamanhos de telas)-->
                         <v-col v-show="$vuetify.breakpoint.xl || $vuetify.breakpoint.lg">
                           <div id="arte"><img width="360px" height="336px" v-bind:src="require('../assets/art/'+ nome +'.png')"></div>
                         </v-col>
@@ -147,6 +155,7 @@
                           </table>
                         </v-col>
                       </v-row>
+                      <!-- Stats do pokemon (Cores personalizadas de acordo com o potencial de cada stat) -->
                       <v-row>
                         <v-col>
                         <center class="subtitulo">Base Stats</center>
@@ -192,6 +201,7 @@
                           </table>
                         </v-col>
                       </v-row>
+                      <!-- Fraquezas (Cores personalizadas) -->
                       <v-row>
                         <v-col>
                           <center class="subtitulo">Type Defenses</center>
@@ -233,6 +243,7 @@
                           </tbody>
                         </table></center>
                       </v-col>
+                      <!-- Cadeia de evolução (Normal e Shiny) -->
                       <v-row>
                         <v-col>
                           <center class="subtitulo">Evolution Chart</center>
@@ -602,28 +613,35 @@ export default {
     async getData() {
       //consumindo a pokedex
       const data = await getPokedex();
+      
       //Todos pokemons da KantoDex
       this.pokemons = data;
     },
 
     async select(event){
       this.drawer = false
+      
       // Buscando e Tratando o nome
       let targetId = event.currentTarget.innerHTML;
       this.nome = targetId.split('>')[4].split('<')[0];
       
-      /*Resgatando as infos do pokemon*/
+      //Iniciando o layout de loading
       this.loading = true;
+
+      //Resgatando dados do pokemon
       const dados = await getPokemon(this.nome);
-      //Importando arte de outro banco
-      //this.arte = 'https://img.pokemondb.net/artwork/large/'+this.nome+'.jpg'; //Arte
       this.tipos = dados.types[0].type.name;
+
       //Tratando tipos duplos
       if(dados.types.length > 1){
         this.tipos = this.tipos+' / '+ dados.types[1].type.name;
       }
+
+      //Resgatando vantagens/fraquezas
       const fraquezas = await getFraqueza(this.tipos);
       this.fraqueza = fraquezas;
+
+      //Importando para o objeto as informações
       this.altura = dados.height/10;
       this.peso = dados.weight/10;
       this.numero = dados.id;
@@ -633,37 +651,40 @@ export default {
       this.defesa = dados.stats[3].base_stat;
       this.ataque = dados.stats[4].base_stat;
       this.hp = dados.stats[5].base_stat;
-
-      //Outras Infos
       this.xp = dados.base_experience;
       this.nacional = dados.order;
+
+      //Tratando múltiplas habilidades
       this.habilidades = [];
       for(let i=0;i<dados.abilities.length;i++){
         this.habilidades.push(dados.abilities[i].ability.name);
       }
-      //Infos de especies
+
+      //Resgatando dados da especie do pokemon
       const especies = await getEspecie(this.nome);
       this.especie = especies;
 
+      //Resgatando dados das evoluções do pokemon
       const evolucoes = await getEvolucao(this.nome);
       console.log(evolucoes);
       this.evolucao = evolucoes;
+
+      //Encerrando o layout de loading
       this.loading = false;
     },
     async carregarLista() {
-      //Importando lista de pokemons pelo tipo
+      //Importando lista de pokemons pelo tipo dado no filtro (desktop) ou filtro (mobile)
       if(document.getElementById("filtro").value != ''){
         const data = await getPokemonByFilter(document.getElementById("filtro").value);
-        //Todos pokemons do tipo
         this.pokemons = data;
       }
       if(document.getElementById("filtroMobile").value != ''){
         const data = await getPokemonByFilter(document.getElementById("filtroMobile").value);
-        //Todos pokemons do tipo
         this.pokemons = data;
       }
     },
     titleize(text) {
+      //Método para deixar em Maiúsculo a Primeira letra de cada palavra e o resto em minúsculo (Usada no nome do pokemon selecionado)
       var words = text.toLowerCase().split(" ");
       for (var a = 0; a < words.length; a++) {
         var w = words[a];
@@ -693,12 +714,6 @@ a {
 }
 th, td{
   padding: 4px 10px;
-  /*
-  border-color: #f0f0f0;
-  border-style: solid;
-  border-width: 1px 0;
-  border-collapse: collapse;
-  */
 }
 th {
   text-align: right;
@@ -708,7 +723,6 @@ th {
   white-space: nowrap;
   width: 1px;
 }
-
 
 .app{
   display: flex;

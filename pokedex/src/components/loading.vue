@@ -1,13 +1,10 @@
 <template>
+<!-- Layout padrão de Carregando -->
   <v-layout row justify-center>
-    <v-dialog
-      v-model="loading"
-      persistent
-      fullscreen
-      content-class="loading-dialog"
-    >
+    <v-dialog v-model="loading" persistent fullscreen content-class="loading-dialog">
       <v-container fill-height>
         <v-layout row justify-center align-center>
+          <!-- Gif de carregando do Pokemon GO -->
           <img v-bind:src="require('../assets/pokeball.gif')">
         </v-layout>
       </v-container>
